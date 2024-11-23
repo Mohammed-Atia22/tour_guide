@@ -4,17 +4,24 @@ const express = require('express');
 const app = express();
 const connectDB = require('./db/connect');
 const authuser = require('./routes/user');
-const authtrip = require('./routes/trip');
+const authjob = require('./routes/job');
+const authimage = require('./routes/image');
 const verifyjwt = require('./middlewares/verifyjwt');
-app.use(express.json());
+const path = require('path');
+const cors = require('cors');
 
+
+app.use(express.static(path.join(__dirname,"images")));
+app.use(express.json());
+app.use(cors());
 
 app.get('/',(req,res)=>{
     res.send('hello world');
 })
 
 app.use('/api/user' , authuser);
-app.use('/api/trip', verifyjwt , authtrip);
+app.use('/api/job', verifyjwt , authjob);
+app.use('/api/image', authimage);
 
 
 

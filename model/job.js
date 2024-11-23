@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
-const tripschema = new mongoose.Schema({
+const jobschema = new mongoose.Schema({
     city:{
         type:String,
-        required:[true,'please provide your trip city'],
+        required:[true,'please provide your Job city'],
         minlength:5,
         maxlength:50
     },
@@ -19,11 +19,13 @@ const tripschema = new mongoose.Schema({
         minlength:5,
         maxlength:50
     },
-    time:{
-        type:String,
-        required:[true,'please provide your trip time'],
-        minlength:5,
-        maxlength:50
+    fdate:{
+        type:Date,
+        required:[true,'please provide your Job time'],
+    },
+    sdate:{
+        type:Date,
+        required:[true,'please provide your Job time'],
     },
     money:{
         type:Number
@@ -39,4 +41,4 @@ const tripschema = new mongoose.Schema({
 
 
 
-module.exports = mongoose.model('trip',tripschema);
+module.exports = mongoose.model('job',jobschema);
