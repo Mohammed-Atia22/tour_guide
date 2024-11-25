@@ -6,6 +6,7 @@ const connectDB = require('./db/connect');
 const authuser = require('./routes/user');
 const authjob = require('./routes/job');
 const authimage = require('./routes/image');
+const authsearch = require('./routes/search');
 const verifyjwt = require('./middlewares/verifyjwt');
 const path = require('path');
 const cors = require('cors');
@@ -21,6 +22,7 @@ app.get('/',(req,res)=>{
 
 app.use('/api/user' , authuser);
 app.use('/api/job', verifyjwt , authjob);
+app.use('/api/search', verifyjwt , authsearch);
 app.use('/api/image', authimage);
 
 

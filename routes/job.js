@@ -15,7 +15,6 @@ router.route('/')
     .get(getalljobs)
     
 
-
 router.route('/:id')
     .get(getjob)
     .patch(updatejob)
