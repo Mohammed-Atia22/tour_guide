@@ -38,6 +38,9 @@ const userschema = new mongoose.Schema({
         type:String,
         required:[true,'please provide your email password'],
         minlength:7
+    },
+    refreshToken:{
+        type:String
     }
 })
 

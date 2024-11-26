@@ -9,6 +9,8 @@ const register =async (req,res) => {
         res.status(400).json({msg:'please provide your name and your city and your first language and your last language and email and password'});
     } else{
         try {
+            const dublicate = await User.findOne({email}).exec();
+            if(dublicate) return res.sendStatus(409);
             const salt = await bcrypt.genSalt(10);
             const hashedpassword = await bcrypt.hash(password,salt);
             const tempuser = {name,ucity,uflanguage,uslanguage,email,password:hashedpassword};
@@ -16,13 +18,15 @@ const register =async (req,res) => {
             const accesstoken = jwt.sign(
                 {userid:user.get('_id'),name:user.get('name')},
                 process.env.ACCESS_TOKEN_SECRET,
-                {expiresIn:'1d'}
+                {expiresIn:'1d'}    // 5minutes
             );
             const refreshtoken = jwt.sign(
-                {userid:this._id,name:this.name},
+                {name:this.name},
                 process.env.REFRESH_TOKEN_SECRET,
                 {expiresIn:'1d'}
             )
+            // const tempuser = {name,ucity,uflanguage,uslanguage,email,password:hashedpassword,refreshtoken};
+            // const user = await User.create(tempuser);
             res.cookie('jwt',refreshtoken,{httpOnly:true,maxAge:24*60*60*1000});
             res.status(201).json({user,accesstoken});
         } catch (error) {
@@ -37,6 +41,7 @@ const login = async (req,res)=>{
     }
     try {
         const user = await User.findOne({email});
+        if(!user) return res.sendStatus(401);
         const match = await bcrypt.compare(password,user.get('password'));
         if(match){
             const accesstoken = jwt.sign(
@@ -49,6 +54,9 @@ const login = async (req,res)=>{
                 process.env.REFRESH_TOKEN_SECRET,
                 {expiresIn:'1d'}
             )
+            user.refreshToken = refreshtoken;
+            const result = await user.save();
+            console.log(`login ${result}`)
             res.cookie('jwt',refreshtoken,{httpOnly:true,maxAge:24*60*60*1000});
             res.status(201).json({user,accesstoken});
             //res.status(200).json(user);

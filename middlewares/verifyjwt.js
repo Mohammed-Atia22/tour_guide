@@ -9,7 +9,11 @@ const verifyjwt = (req,res,next) => {
     console.log(authheader);
     const token = authheader.split(' ')[1];
     try {
-        const payload = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET);
+        const payload = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET,(err)=>{
+            if(err){
+                return res.sendStatus(403);
+            }
+        });
         req.user = {userid:payload.userid,name:payload.name};
         next();
     } catch (error) {
